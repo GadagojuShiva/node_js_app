@@ -1,7 +1,7 @@
 # Use the official Ubuntu image as the base image
 FROM ubuntu
 
-# Set the working directory inside the container
+
 WORKDIR /app
 
 # Copy the current directory (where the Dockerfile is located) into the container at /app
