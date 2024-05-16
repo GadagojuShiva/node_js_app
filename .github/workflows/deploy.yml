@@ -1,0 +1,39 @@
+name: Deploy to ECS
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v2
+        with:
+          node-version: '14'
+
+      - name: Install dependencies
+        run: npm install
+
+      - name: Build Docker image
+        run: |
+          docker build -t gadagojushiva/my-node-app .
+          docker tag gadagojushiva/my-node-app:latest gadagojushiva/my-node-app:latest
+
+      - name: Login to AWS ECR
+        uses: aws-actions/amazon-ecr-login@v2
+
+      - name: Push Docker image to ECR
+        run: |
+          docker push gadagojushiva/my-node-app:latest
+
+      - name: Deploy to ECS
+        run: |
+          aws ecs update-service --cluster my-app-cluster --service my-app-service --force-new-deployment
+
