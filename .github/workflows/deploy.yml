@@ -31,11 +31,11 @@ jobs:
 
       - name: Tag Docker image for Amazon ECR
         run: |
-          docker tag gadagojushiva/my-node-app:latest ${{ steps.login-ecr.outputs.registry }}/my-node-app:latest
+          docker tag gadagojushiva/my-node-app:latest ${{ steps.login-ecr.outputs.registry }}/mynodejsapp:latest
 
       - name: Push Docker image to Amazon ECR
         run: |
-          docker push ${{ steps.login-ecr.outputs.registry }}/my-node-app:latest
+          docker push ${{ steps.login-ecr.outputs.registry }}/mynodejsapp:latest
 
       - name: Deploy to ECS
         run: |
