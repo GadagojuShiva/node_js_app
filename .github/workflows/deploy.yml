@@ -18,19 +18,21 @@ jobs:
         with:
           node-version: '14'
 
-      - name: Login to AWS ECR
+      - name: Login to Amazon ECR
+        id: login-ecr
         uses: aws-actions/amazon-ecr-login@v2
-        with:
-          region: us-west-1  # Specify the AWS region here
 
       - name: Pull Docker image from Docker Hub
         run: |
           docker pull gadagojushiva/my-node-app:latest
 
-      - name: Push Docker image to ECR
+      - name: Tag Docker image for ECR
         run: |
-          docker tag gadagojushiva/my-node-app:latest <aws_account_id>.dkr.ecr.us-west-1.amazonaws.com/my-node-app:latest
-          docker push 730335353897.dkr.ecr.us-west-1.amazonaws.com/my-node-app:latest
+          docker tag gadagojushiva/my-node-app:latest ${{ steps.login-ecr.outputs.registry }}/gadagojushiva/mynodejsapp:latest
+
+      - name: Push Docker image to Amazon ECR
+        run: |
+          docker push ${{ steps.login-ecr.outputs.registry }}/gadagojushiva/mynodejsapp:latest
 
       - name: Deploy to ECS
         run: |
