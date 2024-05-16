@@ -50,4 +50,5 @@ The CD workflow is managed using GitHub Actions. On each push to the `main` bran
 - **Scaling**: Adjust the `cpu`, `memory`, and `desired_count` parameters in `main.tf` as per your application's scaling needs.
 - **Customization**: Modify the ECS task definition and service configuration in `main.tf` to suit your specific application requirements.
 
-Feel free to customize this deployment process based on your application's needs and deployment preferences. Happy deploying!
+## Demo Video
+- [Watch the Video](https://drive.google.com/file/d/1flA997ILvAE-oPDzQ5qyNcBa_HfZIbBO/view?usp=sharing)
