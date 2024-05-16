@@ -20,13 +20,16 @@ jobs:
 
       - name: Login to Amazon ECR
         id: login-ecr
-        uses: aws-actions/amazon-ecr-login@v2
+        run: |
+          aws configure set aws_access_key_id ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws configure set aws_secret_access_key ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws configure set region us-west-1  # Specify the AWS region here
 
       - name: Pull Docker image from Docker Hub
         run: |
           docker pull gadagojushiva/my-node-app:latest
 
-      - name: Tag Docker image for ECR
+      - name: Tag Docker image for Amazon ECR
         run: |
           docker tag gadagojushiva/my-node-app:latest ${{ steps.login-ecr.outputs.registry }}/gadagojushiva/mynodejsapp:latest
 
