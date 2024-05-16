@@ -13,30 +13,24 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v2
 
-      - name: Setup Node.js
-        uses: actions/setup-node@v2
-        with:
-          node-version: '14'
+      - name: Setup AWS credentials
+        run: |
+          echo "[default]" >> ~/.aws/credentials
+          echo "aws_access_key_id=${{ secrets.AWS_ACCESS_KEY_ID }}" >> ~/.aws/credentials
+          echo "aws_secret_access_key=${{ secrets.AWS_SECRET_ACCESS_KEY }}" >> ~/.aws/credentials
+          aws configure set region us-west-1
 
       - name: Login to Amazon ECR
-        id: login-ecr
-        run: |
-          aws configure set aws_access_key_id ${{ secrets.AWS_ACCESS_KEY_ID }}
-          aws configure set aws_secret_access_key ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-          aws configure set region us-west-1  # Specify the AWS region here
+        run: aws ecr get-login-password --region us-west-1 | docker login --username AWS --password-stdin 730335353897.dkr.ecr.us-west-1.amazonaws.com
 
-      - name: Pull Docker image from Docker Hub
-        run: |
-          docker pull gadagojushiva/my-node-app:latest
+      - name: Pull Docker image
+        run: docker pull gadagojushiva/my-node-app:latest
 
       - name: Tag Docker image for Amazon ECR
-        run: |
-          docker tag gadagojushiva/my-node-app:latest ${{ steps.login-ecr.outputs.registry }}/my-node-app:latest
+        run: docker tag gadagojushiva/my-node-app:latest 730335353897.dkr.ecr.us-west-1.amazonaws.com/mynodejsapp:latest
 
       - name: Push Docker image to Amazon ECR
-        run: |
-          docker push ${{ steps.login-ecr.outputs.registry }}/my-node-app:latest
+        run: docker push 730335353897.dkr.ecr.us-west-1.amazonaws.com/mynodejsapp:latest
 
       - name: Deploy to ECS
-        run: |
-          aws ecs update-service --cluster my-app-cluster --service my-app-service --force-new-deployment
+        run: aws ecs update-service --cluster my-app-cluster --service my-app-service --force-new-deployment
